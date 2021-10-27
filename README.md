@@ -46,6 +46,16 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias
 - python 3.6
 - openpyxl
 
+## Instalação
+
+A linguagem [python](https://www.python.org/downloads/) requer um modulo openpyxl.
+
+Para instalar o módulo execute o comando abaixo
+
+```sh
+python -m pip install openpyxl
+```
+
 ## :link: Como contribuir 
 
 - Faça um Fork do repositório
