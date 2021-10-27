@@ -1,4 +1,5 @@
 import os
+import json
 from openpyxl.styles import NamedStyle, Font, Border, Side
 from openpyxl.cell import WriteOnlyCell
 from openpyxl.comments import Comment
@@ -39,7 +40,6 @@ def setValuesRow(__sheet, __data):
     __sheet.append(headers)
     #Laço para adicionar os dados a planilha
     for row in __data:
-        print(row)
         __sheet.append(row)
     
     #Retorna a planilha criada
@@ -63,6 +63,44 @@ def createChart(__sheet, __data, __title,__col):
     chart.title = __title
     #Retorna o grafico
     return chart
+
+def sendEmail(__anexo, __data):
+    # criar a integração com o outlook
+    outlook = win32.Dispatch('outlook.application')
+    
+    # criar um email
+    email = outlook.CreateItem(0)
+    
+    __card1 = __data[0][0]
+    __card2 = __data[1][0]
+    __card3 = __data[2][0]
+    
+    __cardValor1 = __data[0][1]
+    __cardValor2 = __data[1][1]
+    __cardValor3 = __data[2][1]
+    
+    #read file json
+    __file = open("data/Properties.json")
+    obj = json.load(__file)
+    
+    # configurar as informações do seu e-mail
+    email.To = obj["AddressEmail"]["emailTo"]
+    email.CC = obj["AddressEmail"]["emailCC"]
+    email.Subject = "Relatorio de Cartões - E-mail Automático"
+    email.HTMLBody = f"""
+    <p>Prezados(as)</p>
+    <p>Segue o resumo dos dados e anexo os dados completos.</p>
+    <p>{__card1}: {__cardValor1}</p>
+    <p>{__card2}: {__cardValor2}</p>
+    <p>{__card3}: {__cardValor3}</p>
+    
+    <p>Att.</p>
+    <p>Equipe ECQ</p>
+    """
+    email.Attachments.Add("C://Users/lpintanel/Desktop/PythonExcel/"+__anexo)
+    email.Send()
+    print("Email Enviado")
+    return
 ### Function End    ###
 
 ### Function Main   ###
@@ -146,5 +184,5 @@ fileName="Relatorio.xlsx"
 #Salva os dados em arquivo .xlsx
 book.save(fileName)
 
-#sendEmail(fileName, countAP_Total, countCNC_Total, countBurlar_Total, countDA_Total)
+#sendEmail(fileName, data)
 ### Function Main End   ###
